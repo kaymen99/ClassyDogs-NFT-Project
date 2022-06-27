@@ -1,0 +1,12 @@
+{
+  "name": "nft_generator",
+  "version": "1.0.0",
+  "description": "Nft collection generator",
+  "main": "index.js",
+  "author": "Aymen1001",
+  "license": "MIT",
+  "dependencies": {
+    "canvas": "^2.9.3",
+    "sha1": "^1.1.1"
+  }
+}
