@@ -16,7 +16,8 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     uint256 public cost;
     uint256 public maxSupply;
     uint256 public maxMintAmountPerTx;
-    uint256 public nftPerAddressLimit = 5;
+    // Number of nfts is limited to 3 per user during whitelisting
+    uint256 public nftPerAddressLimit = 3;
 
     bool public paused = true;
     bool public revealed = false;
@@ -123,6 +124,36 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     }
 
     //only owner
+
+    function startWhitelisting() public onlyOwner {
+        require(paused && !whitelistMintEnabled, "whitelisting impossible");
+        pause(false);
+        setWhitelistMintEnabled(true);
+    }
+
+    function startPresale(uint256 _newCost, uint256 _newmaxMintAmount)
+        public
+        onlyOwner
+    {
+        require(!paused && whitelistMintEnabled, "Presale impossible");
+        setWhitelistMintEnabled(false);
+        setCost(_newCost);
+        setMaxMintAmountPerTx(_newmaxMintAmount);
+    }
+
+    function startPublicSale(uint256 _newCost, uint256 _newmaxMintAmount)
+        public
+        onlyOwner
+    {
+        require(
+            !paused && !whitelistMintEnabled && !revealed,
+            "Public sale impossible"
+        );
+        reveal();
+        setCost(_newCost);
+        setMaxMintAmountPerTx(_newmaxMintAmount);
+    }
+
     function reveal() public onlyOwner {
         revealed = true;
     }
