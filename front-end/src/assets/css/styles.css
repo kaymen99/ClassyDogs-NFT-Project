@@ -1,0 +1,346 @@
+.home {
+    background-color: #1e242f;
+    position: absolute;
+    width: 100%;
+    height: auto;
+    background-size: cover;
+    padding-top: 1rem;
+}
+
+.home-container-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 42px;
+    color: #FFFFFF;
+    margin-bottom: 1rem;
+    padding-bottom: 50px;
+}
+
+.bt-linear {
+    background: linear-gradient(90deg, #f82167 0%, #1e242f 109.89%);
+    padding-left: 1rem;
+}
+
+.bt-red {
+    background-color: #f82167;
+    text-size-adjust: 32px;
+}
+
+/* header */
+
+.header {
+    width: 100%;
+    position: relative;
+    padding-bottom: 2rem;
+}
+
+.header-container {
+    width: 75%;
+    min-height: 65vh;
+    margin: 0 auto;
+    padding-left: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-box {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+/* roadmap */
+
+.roadmap {
+    margin-top: 20px;
+    margin-bottom: 4rem;
+    color: white;
+}
+
+.roadmap h4 {
+    font-size: 44px;
+    font-weight: 600;
+    font-family: "Akaya Telivigala", cursive;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+.roadmap span {
+    color: #f82167;
+    font-weight: bold;
+    font-size: 26px;
+    font-family: "Akaya Telivigala", cursive;
+}
+
+.roadmap p {
+    border-top: 2px dashed;
+    border-color: #f82167 !important;
+    margin: 0;
+    padding: 30px;
+}
+
+.roadmap p:nth-child(even) {
+    border-left: 2px dashed;
+    border-bottom-left-radius: 30px;
+    border-top-left-radius: 30px;
+    margin-right: 30px;
+    padding-right: 0;
+}
+
+.roadmap p:nth-child(odd) {
+    border-right: 2px dashed;
+    border-bottom-right-radius: 30px;
+    border-top-right-radius: 30px;
+    margin-left: 30px;
+    padding-left: 0;
+}
+
+.roadmap p:first-child {
+    margin-top: 20px;
+    border-top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.roadmap p:first-child {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Mint section */
+
+.mint-section {
+    width: 100%;
+    position: relative;
+    color: white;
+    padding-bottom: 4rem;
+    text-align: center;
+}
+
+.mint-container {
+    width: 55%;
+    min-height: 80vh;
+    margin-bottom: 1rem;
+    margin: 0 auto;
+    border: solid;
+    border-color: #f82167;
+    border-width: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mint-section h1 {
+    font-family: "Akaya Telivigala", cursive;
+    font-size: 44px;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin: 1rem 0;
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.mint-amount {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.mint-container p {
+    font-size: 1.4rem;
+    font-family: var(--font-secondary);
+    margin-bottom: 2rem;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+/* Countdown component */
+
+.countdown {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.countdown ul {
+    display: flex;
+    gap: 2rem
+}
+
+.countdown .clock-item {
+    list-style: none;
+    width: 70px;
+    height: auto;
+}
+
+.countdown .clock-item .count-number {
+    /* background: #f82167; */
+    color: var(--font-color);
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-secondary);
+    padding: 1rem;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    border-radius: 4px 4px 0 0;
+}
+
+.countdown .clock-item .count-text {
+    background: #f82167;
+    font-family: var(--font-secondary);
+    font-size: 1.1rem;
+    color: #fff;
+    padding: 0.5rem 0.7rem;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    border-radius: 0 0 4px 4px;
+}
+
+
+@media screen and (max-width: 768px) {
+    .menu {
+        gap: 1rem;
+    }
+
+    .countdown h1 {
+        font-size: 2rem;
+    }
+
+    .countdown p {
+        font-size: 1rem;
+    }
+}
+
+/* Footer */
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba(165, 165, 165, 0.1);
+    padding-bottom: 1rem;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
+
+    width: 100%;
+    text-align: left;
+}
+
+.footer-links div {
+    width: 250px;
+    margin-bottom: 10px;
+}
+
+.footer-links_logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-links_logo div {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.footer-links_logo div h3 {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+}
+
+
+.footer-links_div {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+.footer-links_div h4 {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    color: #FFFFFF;
+    margin-bottom: 1rem;
+}
+
+.footer-links_div p {
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 26px;
+    color: #FFFFFF;
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
+
+.footer-copyright {
+    margin-top: 2rem;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid rgba(165, 165, 165, 0.1);
+    padding-top: 2rem;
+}
+
+.footer-copyright p {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+}
+
+.footer-icon {
+    margin-inline: 10px;
+}
+
+@media screen and (max-width: 850px) {
+    .footer-heading h1 {
+        font-size: 44px;
+        line-height: 50px;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .footer-heading h1 {
+        font-size: 34px;
+        line-height: 42px;
+    }
+
+    .footer-links div {
+        margin: 1rem 0;
+    }
+
+    .footer-btn p {
+        font-size: 14px;
+        line-height: 20px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .footer-heading h1 {
+        font-size: 27px;
+        line-height: 38px;
+    }
+}
