@@ -36,7 +36,7 @@ describe("NftContract.sol", () => {
             expect(await contract.maxSupply()).to.equal(CollectionConfig.maxSupply);
             expect(await contract.maxMintAmountPerTx()).to.equal(CollectionConfig.whitelistSale.maxMintAmountPerTx);
             expect(await contract.hiddenMetadataUri()).to.equal(CollectionConfig.hiddenMetadataUri);
-            expect(await contract.nftPerAddressLimit()).to.equal(5);
+            expect(await contract.nftPerAddressLimit()).to.equal(3);
             expect(await contract.paused()).to.equal(true);
             expect(await contract.revealed()).to.equal(false);
             expect(await contract.whitelistMintEnabled()).to.equal(false);
@@ -65,13 +65,10 @@ describe("NftContract.sol", () => {
 
         beforeEach(async () => {
             // enable whitelist sales
-            await contract.connect(owner).pause(false)
-            await contract.connect(owner).setWhitelistMintEnabled(true)
+            await contract.connect(owner).startWhitelisting()
         })
 
         it("should allow owner to whitelist addresses", async () => {
-
-
             let whitelistAddresses = [
                 user1.address,
                 user2.address,
@@ -90,17 +87,20 @@ describe("NftContract.sol", () => {
             ]
             await contract.connect(owner).whitelistUsers(whitelistAddresses)
 
-            const mintCost = (await contract.cost())
+            const mintCost = await contract.cost()
             await contract.connect(user1).mint(1, { value: mintCost })
 
             expect(await contract.totalSupply()).to.equal(1);
             expect(await contract.addressMintedBalance(user1.address)).to.equal(1);
             expect(await contract.tokenURI(1)).to.equal("ipfs://__CID__/hidden.json")
 
-            // await expect(contract.connect(user1).mint(1, { value: getAmountInWei(0.001) })).to.be.revertedWith("insufficient funds for intrinsic transaction cost")
             await expect(contract.connect(user2).mint(3, { value: mintCost })).to.be.revertedWith("max mint amount per session exceeded")
             await expect(contract.connect(randomUser).mint(1, { value: mintCost })).to.be.revertedWith("user is not whitelisted")
             await expect(contract.connect(user2).mint(0, { value: mintCost })).to.be.revertedWith("need to mint at least 1 NFT")
+            // minting is limited to 3 nft per user during whitelisting period
+            await contract.connect(user1).mint(1, { value: mintCost })
+            await contract.connect(user1).mint(1, { value: mintCost })
+            await expect(contract.connect(user1).mint(1, { value: mintCost })).to.be.revertedWith("max NFT per address exceeded")
         });
 
         it("should allow owner to mint", async () => {
@@ -116,12 +116,13 @@ describe("NftContract.sol", () => {
     describe("Presale (public sale but without nft reveal)", () => {
 
         beforeEach(async () => {
-            // disable whitelist sales and open to public
-            await contract.connect(owner).pause(false)
-            await contract.connect(owner).setWhitelistMintEnabled(false)
-            // change mint cost and max mint amount per Tx
-            await contract.connect(owner).setCost(getAmountInWei(CollectionConfig.preSale.price))
-            await contract.connect(owner).setMaxMintAmountPerTx(CollectionConfig.preSale.maxMintAmountPerTx)
+            // pass the whitelisting step
+            await contract.connect(owner).startWhitelisting()
+            // disable whitelist sales and open presale
+            await contract.connect(owner).startPresale(
+                getAmountInWei(CollectionConfig.preSale.price),
+                CollectionConfig.preSale.maxMintAmountPerTx
+            )
         })
 
         it("should have correct mint price and mint amount per tx", async () => {
@@ -139,8 +140,6 @@ describe("NftContract.sol", () => {
             expect(await contract.balanceOf(randomUser.address)).to.equal(3);
             expect(await contract.addressMintedBalance(randomUser.address)).to.equal(3);
             expect(await contract.tokenURI(1)).to.equal("ipfs://__CID__/hidden.json")
-
-            // await expect(contract.connect(randomUser).mint(3, { value: getAmountInWei(mintCost * 3) })).to.be.revertedWith("max NFT per address exceeded")
         });
 
         it("should allow owner to mint", async () => {
@@ -156,14 +155,18 @@ describe("NftContract.sol", () => {
     describe("Public Sale (nft revealed)", () => {
 
         beforeEach(async () => {
-            // disable whitelist sales and open to public
-            await contract.connect(owner).pause(false)
-            await contract.connect(owner).setWhitelistMintEnabled(false)
-            // change mint cost and max mint amount per Tx
-            await contract.connect(owner).setCost(getAmountInWei(CollectionConfig.publicSale.price))
-            await contract.connect(owner).setMaxMintAmountPerTx(CollectionConfig.publicSale.maxMintAmountPerTx)
-            // reveal true nft URIs
-            await contract.connect(owner).reveal()
+
+            // pass the two steps of : whitelisting and presale
+            await contract.connect(owner).startWhitelisting()
+            await contract.connect(owner).startPresale(
+                getAmountInWei(CollectionConfig.preSale.price),
+                CollectionConfig.preSale.maxMintAmountPerTx
+            )
+            // Reveal nfts to public
+            await contract.connect(owner).startPublicSale(
+                getAmountInWei(CollectionConfig.publicSale.price),
+                CollectionConfig.publicSale.maxMintAmountPerTx,
+            )
         })
 
         it("should have correct mint price and mint amount per tx", async () => {
@@ -241,7 +244,7 @@ describe("NftContract.sol", () => {
             const ownerFinalBalance = getAmountFromWei(await owner.getBalance())
 
             // withdraw call cost some gas so we to account for it
-            expect(parseFloat(ownerFinalBalance).toFixed(4)).to.be.equal(parseFloat(ownerInitialBalance + mintCost * 4).toFixed(4))
+            expect(parseFloat(ownerFinalBalance).toFixed(3)).to.be.equal(parseFloat(ownerInitialBalance + mintCost * 4).toFixed(3))
 
         })
     })
