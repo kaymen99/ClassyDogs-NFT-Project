@@ -5,21 +5,20 @@ function Roadmap() {
         <div id="raodmap" className="container-md roadmap" style={{ width: "600px" }}>
             <h4 className="text-heading text-center mb-5">NFT Roadmap</h4>
             <p style={{ textAlign: "left" }}>
-                <span>Attributes</span><br />
-                The 5000 NFTs will be updated with all their attributes visible on
-                Phantom and rarity rank displayed on our website
+                <span>Art Generation</span><br />
+                A total of 10000 Classy Dogs NFTs were generated programmaticly and stored into IPFS.
             </p>
             <p style={{ textAlign: "right" }}>
-                <span>Event</span><br />
-                Competition between the NFT holders with special prizes for the winners.
+                <span>whitelisting</span><br />
+                People already in the whitelist can start minting up to 5 NFTS before everyone else.
             </p>
             <p style={{ textAlign: "left" }}>
-                <span>Merch</span><br />
-                Exclusive NFT Merch with limited edition for NFT holders
+                <span>Presale</span><br />
+                A period will open for people to mint unrevealed NFTs to spice things up.
             </p>
             <p style={{ textAlign: "right" }}>
-                <span>Marketplace</span><br />
-                New marketplace will be released for Asset trading
+                <span>Reveal</span><br />
+                The final NFTs reveal will happen and everyone will enjoy their Classy Dogs
             </p>
             <p style={{ textAlign: "left" }}>
                 <span>Coming Soon</span><br />
