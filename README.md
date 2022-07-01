@@ -3,7 +3,7 @@
 <!-- ABOUT THE PROJECT -->
 # Classy-Dogs-NFT-Project
 
-A minting dapp for the Classy Dogs NFT collection with art-generator, whitelisting, presale.
+A complete NFT project from start to finish with +10000 ClassyDogs collection created with an art generator, development and testing of the ERC721 contract and a minting dapp which enables whitelisting, presale and nfts reveal.
 
 <p align="center">
   <img alt="Dark" src="https://user-images.githubusercontent.com/83681204/176852487-147052f0-9a49-4a07-a55d-6850b6018cdf.png" width="100%">
