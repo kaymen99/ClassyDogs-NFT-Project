@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Nft collection generator",
   "main": "index.js",
+  "scripts": {
+    "build": "node index.js",
+    "generate": "node index.js",
+    "update_info": "node utils/update_info.js"
+  },
   "author": "Aymen1001",
   "license": "MIT",
   "dependencies": {
