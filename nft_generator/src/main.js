@@ -68,8 +68,7 @@ const getElements = (path) => {
                 name: cleanName(i),
                 fileName: i,
                 path: `${path}${i}`,
-                // weight: getRarityWeight(i),
-                weight: 10
+                weight: getRarityWeight(i)
             }
         })
 }
@@ -204,7 +203,7 @@ const createDna = (_layers) => {
 };
 
 const writeMetaData = (_data) => {
-    fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data);
+    fs.writeFileSync(`${buildDir}/_metadata.json`, _data);
 };
 
 const removeQueryStrings = (_dna = "") => {
