@@ -2,6 +2,7 @@ const CollectionConfig = {
 
     tokenName: "Classy Dogs Collection",
     tokenSymbol: 'CD',
+    // metadata IPFS URI for Classy Dogs NFT collection
     baseMetadataURI: "ipfs://QmdN2LsGe35Skv8HJjjYQqtv2LNs43VS7zxQgcLPwHxYjd/",
     hiddenMetadataUri: 'ipfs://QmcSWAAxqfdDGcKNGxKeqRbziCNhuwTv7jRD87EjCn1wvg',
     maxSupply: 10000,
