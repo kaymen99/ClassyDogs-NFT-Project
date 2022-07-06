@@ -104,6 +104,7 @@ function OwnerDashboard() {
         let newCost = ethers.utils.parseEther(CollectionConfig.publicSale.price.toString(), "ether")
         let maxMintAmount = CollectionConfig.publicSale.maxMintAmountPerTx
         const publicSale_tx = await nft_contract.startPublicSale(
+          CollectionConfig.baseMetadataURI,
           newCost,
           maxMintAmount
         )
