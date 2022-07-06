@@ -2,8 +2,8 @@ const CollectionConfig = {
 
     tokenName: "Classy Dogs Collection",
     tokenSymbol: 'CD',
-    baseMetadataURI: "ipfs://testNftURI/",
-    hiddenMetadataUri: 'ipfs://__CID__/hidden.json',
+    baseMetadataURI: "ipfs://QmdN2LsGe35Skv8HJjjYQqtv2LNs43VS7zxQgcLPwHxYjd/",
+    hiddenMetadataUri: 'ipfs://QmcSWAAxqfdDGcKNGxKeqRbziCNhuwTv7jRD87EjCn1wvg',
     maxSupply: 10000,
     whitelistSale: {
         price: 0.05,
