@@ -1,11 +1,14 @@
 
-const namePrefix = "Your Collection";
-const description = "Remember to replace this description";
-const baseUri = "ipfs://NewUriToReplace";
+const namePrefix = "The Classy Dogs";
+const description = "No more kitties, here comes the Classy Dogs";
+
+// Here you put your NFTs metadata URI
+// The given URI is just an example used in my Classy Dogs project where i uploaded 5O items to IPFS through PINATA
+const baseUri = "ipfs://QmaL4xvWpr6JGgm1Z7NWqDMnDnNG4vSQ4YKiYDAqV68mBF";
 
 const layerConfigurations = [
     {
-        growEditionSizeTo: 5,
+        growEditionSizeTo: 50,
         layersOrder: [
             { name: "Background" },
             { name: "Body" },
@@ -23,8 +26,8 @@ const shuffleLayerConfigurations = false;
 const debugLogs = false;
 
 const format = {
-    width: 512,
-    height: 512,
+    width: 300,
+    height: 300,
     smoothing: false,
 };
 
