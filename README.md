@@ -100,6 +100,80 @@ Please install or have installed the following:
 * [Ganache](https://trufflesuite.com/ganache/) for local smart contracts deployement and testing
 * [Pinata](https://www.pinata.cloud) account for IPFS storage (free account).
 
+### Art generation
+
+After installing node open a terminal in your code editor (VS Code for example) and clone this repository :
+   ```sh
+   git clone https://github.com/Aymen1001/Complete-NFT-Project.git
+   ```
+
+Then install the art engine dependancies by running :
+   ```sh
+   cd art_generator
+   yarn
+   ```
+   
+This will install all libraries needed for creating the nfts, the next step is to add the differents layers, the art used for this collection is not of my creation, the orginal images can be downloaded [here](https://www.firevectors.com/2022/03/free-nft-layers-download.html?m=1) or you can use the ones i already edited and added rarities to them (the folder size was too big so i couldn't upload to Github), you can get them from Google drive with this [link](https://drive.google.com/drive/folders/1za0Wg11BrowiIOaWEGb2UE4fJexoJi5e?usp=sharing).
+
+In the config file you can change the collection name and description (if you want), you can choose how many items you want to generate by changing the growEditionSizeTo variable and also the images size (format).
+After finishing the configuration run the command to generate the items :
+   ```sh
+   yarn build
+   ```
+
+When the build ends you'll find the generated images in the images folder inside th build folder and their respective metadata in the json folder, the next step is to upload the images folder to IPFS with your previously created Pinata account, you can then copy the resulting CID and paste it in the config file :
+   ```sh
+   const baseUri = "ipfs://YOUR-IMAGES-CID";
+   ```
+Update the URIs for all the NFTs metadata files by running this command :
+
+   ```sh
+   yarn update_info
+   ```
+Now upload the final json folder to IPFS as you did with images folder, and finally in the build folder you'll also find a hidden folder which contains the hidden NFT image&metadata used in the collection pre-reveal step,the hidden image must be uploaded to IPFS and its CID should be copied to the hidden metadata file which in the end must also be uploaded to IPFS to get the final hidden NFT URI. 
+
+If you find problems going through the upload part you can refere back to hashlips Youtube video which explain each step perfectly [How to create an NFT collection - Masterclass](https://www.youtube.com/watch?v=Zhmj4PiJ-GA)
+
+### Contracts
+
+As mentioned before the contracts are developed with the Hardhat framework, before deploying them you must first install the required dependancies by running :
+   ```sh
+   cd smart_contracts
+   yarn
+   ```
+Then in the config folder you'll find the collection config file where you must add the NFT name & decription and the IPFS CID for both the nfts and the hidden nft those you get from pinata, you can also change the minting cost and the maximum supply.
+   ```sh
+    tokenName: "Classy Dogs Collection",
+    tokenSymbol: 'CD',
+    baseMetadataURI: "ipfs://YOUR-NFT-CID/",
+    hiddenMetadataUri: 'ipfs://YOUR-Hidden-NFT-CID',
+    maxSupply: 10000,
+    whitelistSale: {
+        price: 0.05,
+        maxMintAmountPerTx: 1,
+    },
+    preSale: {
+        price: 0.07,
+        maxMintAmountPerTx: 3,
+    },
+    publicSale: {
+        price: 0.09,
+        maxMintAmountPerTx: 5,
+    },
+   ```
+
+After going through all the configuration step, you'll need to deploy the smart contract to the ganache network by running: 
+   ```sh
+   cd hardhat
+   npx hardhat run scripts/deploy-nftContract.js --network ganache
+   ```
+This will create a config.js file and an artifacts folder and transfer them to the src folder to enable the interaction between the contract and the UI
+
+If you want to test the functionnalities of the NFT contract you can do it by running:
+   ```sh
+   npx hardhat test
+   ```
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
