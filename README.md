@@ -130,7 +130,9 @@ Update the URIs for all the NFTs metadata files by running this command :
    ```sh
    yarn update_info
    ```
-Now upload the final json folder to IPFS as you did with images folder, and finally in the build folder you'll also find a hidden folder which contains the hidden NFT image&metadata used in the collection pre-reveal step,the hidden image must be uploaded to IPFS and its CID should be copied to the hidden metadata file which in the end must also be uploaded to IPFS to get the final hidden NFT URI. 
+Now upload the final json folder to IPFS as you did with images folder.
+
+Finally in the build folder you'll also find a hidden folder which contains the hidden NFT image&metadata used in the collection pre-reveal step,the hidden image must be uploaded to IPFS and its CID should be copied to the hidden metadata file which in the end must also be uploaded to IPFS to get the final hidden NFT URI. 
 
 If you find problems going through the upload part you can refere back to hashlips Youtube video which explain each step perfectly [How to create an NFT collection - Masterclass](https://www.youtube.com/watch?v=Zhmj4PiJ-GA)
 
@@ -141,6 +143,18 @@ As mentioned before the contracts are developed with the Hardhat framework, befo
    cd smart_contracts
    yarn
    ```
+   
+Next you need to setup the environement variables in the .env file, this are used when deploying the contracts :
+
+   ```sh
+    RINKEBY_ETHERSCAN_API_KEY="your etherscan api key"
+    RINKEBY_RPC_URL="Your rinkeby RPC url from alchemy or infura"
+    POLYGON_RPC_URL="Your polygon RPC url from alchemy or infura"
+    MUMBAI_RPC_URL="Your mumbai RPC url from alchemy or infura"
+    PRIVATE_KEY="your private key"
+   ```
+* <b>NOTE :</b> Only the private key is needed when deploying to the ganache network, the others variables are for deploying to the testnets or real networks and etherscan api key is for verifying your contracts on rinkeby etherscan.
+
 Then in the config folder you'll find the collection config file where you must add the NFT name & decription and the IPFS CID for both the nfts and the hidden nft those you get from pinata, you can also change the minting cost and the maximum supply.
    ```sh
     tokenName: "Classy Dogs Collection",
@@ -168,6 +182,16 @@ After going through all the configuration step, you'll need to deploy the smart 
    npx hardhat run scripts/deploy-nftContract.js --network ganache
    ```
 This will create a config.js file and an artifacts folder and transfer them to the src folder to enable the interaction between the contract and the UI
+
+* <b>IMPORTANT :</b> I used the ganache network for development purposes only, you can choose another testnet or real network if you want, for that you need to add it to the hardhat.config file for example for the rinkeby testnet  
+
+   ```sh
+   rinkeby: {
+      url: RINKEBY_RPC_URL,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 4,
+    }
+   ```
 
 If you want to test the functionnalities of the NFT contract you can do it by running:
    ```sh
