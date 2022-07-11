@@ -197,7 +197,14 @@ If you want to test the functionnalities of the NFT contract you can do it by ru
    ```sh
    npx hardhat test
    ```
+### Front end
 
+To start the user interface just run the following commands :
+   ```sh
+   cd front-end
+   yarn
+   yarn start
+   ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
