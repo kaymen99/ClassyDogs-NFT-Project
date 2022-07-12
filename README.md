@@ -109,7 +109,7 @@ After installing node open a terminal in your code editor (VS Code for example) 
 
 Then install the art engine dependancies by running :
    ```sh
-   cd art_generator
+   cd nft_generator
    yarn
    ```
    
