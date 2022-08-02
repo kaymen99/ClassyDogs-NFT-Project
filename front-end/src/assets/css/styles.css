@@ -7,6 +7,13 @@
     padding-top: 1rem;
 }
 
+@media (max-width: 48em) {
+    .home {
+        width: 100%;
+        background-size: cover;
+    }
+}
+
 .home-container-text {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
@@ -25,6 +32,17 @@
 .bt-red {
     background-color: #f82167;
     text-size-adjust: 32px;
+}
+
+.logo {
+    height: 35px;
+    width: 180px;
+    background-color: #f82167;
+    color: #1e242f;
+    border-radius: 12px;
+    font-family: sans serif;
+    font-weight: 700;
+    font-size: 26px;
 }
 
 /* header */
@@ -51,6 +69,19 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+@media (max-width: 64em) {
+    .header-container {
+        width: 85%;
+    }
+}
+
+@media (max-width: 48em) {
+    .header-container {
+        flex-direction: column-reverse;
+        width: 100%;
+    }
 }
 
 
@@ -208,8 +239,7 @@
     border-radius: 0 0 4px 4px;
 }
 
-
-@media screen and (max-width: 768px) {
+@media (max-width: 64em) {
     .menu {
         gap: 1rem;
     }
@@ -220,6 +250,28 @@
 
     .countdown p {
         font-size: 1rem;
+    }
+
+    .clock-item {
+        width: 40px;
+    }
+}
+
+@media (max-width: 650px) {
+    .menu {
+        gap: 0.8rem;
+    }
+
+    .countdown h1 {
+        font-size: 1rem;
+    }
+
+    .countdown p {
+        font-size: 0.8rem;
+    }
+
+    .clock-item {
+        width: 10px;
     }
 }
 
@@ -240,7 +292,6 @@
     align-items: flex-start;
     flex-wrap: wrap;
     flex-direction: row;
-
     width: 100%;
     text-align: left;
 }
