@@ -62,7 +62,6 @@ It would take an insane amount of time to manually generate 10000 NFTs and creat
        <li>main.js : the core of the engine it uses the information from the config file to draw the different layers and then save the resulting image and it's metadata into the build folder.</li>
       </ul>
 
-
 ### Smart contracts
 
 The contract development and testing is done using the Hardhat framework in the smart_contracts folder, for this project there is two version of the ERC721 : the traditional ERC721Enumerable and the gas optimised ERC721A but currently only the first version is used. The ERC721 contract was modified to enable users whitelisting, custom minting prices and NFT reveal.
@@ -72,6 +71,7 @@ In the smart_contracts folder you'll find the deployment and testing scripts in 
 ### User interface
    
 The front end is built with React JS, it allows users to mint new NFTS and they can find on the home page a complete roadmap for the entire NFT project, the app also give a simple admin dashboard for setting minting prices and managing the sales period ( whitelisting, presale, public sale).
+
 The front-end is built using the following libraries:
       <ul>
         <li><b>Ethers.js:</b> used as interface between the UI and the deployed smart contract</li>
@@ -79,13 +79,18 @@ The front-end is built using the following libraries:
         <li><b>@reduxjs/toolkit & redux-persist:</b> for managing the app states (account, balance, blockchain) </li>
         <li><b>Material UI:</b> used for react components and styles </li>    
       </ul>
-The main component is Mint.js which handles the nft minting and the coundown periods 
+      
+The main component is Mint.js which handles the nft minting and the coundown periods : 
 
 ![Capture d’écran 2022-07-04 à 18 54 45](https://user-images.githubusercontent.com/83681204/177201050-e93c2aad-4832-49b1-88bd-0f78297c394d.png)
 
-The roadmap explains the steps followed in the NFT project progression
+The roadmap explains the steps followed in the NFT project progression :
 
 ![Capture d’écran 2022-07-04 à 18 58 28](https://user-images.githubusercontent.com/83681204/177201365-c446e19d-f5c8-4ee8-bf58-afbc9051f646.png)
+
+The dashboard can be only be accessed by the nft contract owner from the account window when clicking on the account button in the top of the page, it gives the owner the possibility of withdraw the contract balance, changing nft minting parametres or changing contract state (whitelisting, presale, public sale):
+
+![Capture d’écran 2022-08-03 à 21 07 41](https://user-images.githubusercontent.com/83681204/182701220-af3fd413-18dc-4f51-b253-674e0d85a863.png)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
