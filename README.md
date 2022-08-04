@@ -184,7 +184,7 @@ Then in the config folder you'll find the collection config file where you must 
 After going through all the configuration step, you'll need to deploy the smart contract to the ganache network by running: 
    ```sh
    cd hardhat
-   npx hardhat run scripts/deploy-nftContract.js --network ganache
+   yarn deploy --network ganache
    ```
 This will create a config.js file and an artifacts folder and transfer them to the src folder to enable the interaction between the contract and the UI
 
@@ -200,7 +200,7 @@ This will create a config.js file and an artifacts folder and transfer them to t
 
 If you want to test the functionnalities of the NFT contract you can do it by running:
    ```sh
-   npx hardhat test
+   yarn test
    ```
 ### Front end
 
