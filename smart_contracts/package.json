@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Aymen1001",
   "license": "MIT",
+  "scripts": {
+    "deploy": "npx hardhat run scripts/deploy-nftContract.js",
+    "test": "npx hardhat test"
+  },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
