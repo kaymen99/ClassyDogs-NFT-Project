@@ -87,14 +87,11 @@ function Mint() {
     }
 
     const handleIncrement = () => {
-        if (amount < mintingState.maxMintAmountPerTx) {
-            setAmount(amount + 1)
-        }
+        setAmount(amount + 1)
+
     }
     const handleDecrement = () => {
-        if (amount > 1) {
-            setAmount(amount - 1)
-        }
+        setAmount(amount - 1)
     }
 
     useEffect(() => {
@@ -135,18 +132,17 @@ function Mint() {
                                 {mintingState.currentSupply} NFTs already minted out of our {mintingState.maxSupply} Classy Dogs collection
                             </p>
                             <p>You are the owner of {mintingState.userNftsCount} ClassyDogs </p>
-                            <div className="mint-amount">
-                                <Button variant="contained"
-                                    className='bt-red'
-                                    color="secondary"
-                                    onClick={handleDecrement}>-</Button>
-                                <input type="number" value={amount} />
-                                <Button variant="contained"
-                                    className='bt-red'
-                                    color="secondary"
-                                    onClick={handleIncrement}>+</Button>
+                            <div className="d-flex justify-content-center">
+                                <button type="button"
+                                    className="minus btn btn-danger rounded-circle"
+                                    disabled={amount === 1}
+                                    onClick={handleDecrement}>-</button>
+                                <input type="number" className="mintnum text-center" readOnly value={amount} />
+                                <button type="button"
+                                    className="plus btn btn-danger rounded-circle"
+                                    disabled={amount === mintingState.maxMintAmountPerTx}
+                                    onClick={handleIncrement}>+</button>
                             </div>
-
                             <Button className='bt-linear'
                                 variant="contained"
                                 color="primary"
