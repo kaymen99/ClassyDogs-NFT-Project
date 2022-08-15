@@ -117,10 +117,15 @@
     padding-bottom: 1rem;
 }
 
-.mint-amount {
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: row;
+.mintnum {
+    width: 200px;
+    height: 40px;
+    color: #000;
+    font-size: 28px;
+    padding: 2px;
+    margin: 4px;
+    font-weight: bold;
+    border-radius: 50px;
 }
 
 .mint-container p {
