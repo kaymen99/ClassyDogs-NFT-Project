@@ -1,6 +1,8 @@
-require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
+require("@nomiclabs/hardhat-waffle");
+require("@nomicfoundation/hardhat-chai-matchers");
 require("@nomiclabs/hardhat-etherscan");
+require("hardhat-gas-reporter");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -41,11 +43,11 @@ module.exports = {
       url: "http://127.0.0.1:7545",
       accounts: [process.env.PRIVATE_KEY]
     },
-    // rinkeby: {
-    //   url: RINKEBY_RPC_URL,
-    //   accounts: [process.env.PRIVATE_KEY],
-    //   chainId: 4,
-    // }
+    rinkeby: {
+      url: RINKEBY_RPC_URL,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 4,
+    }
     // mumbai: {
     //   url: MUMBAI_RPC_URL,
     //   accounts: [process.env.PRIVATE_KEY],
