@@ -1,12 +1,14 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.7 <0.9.0;
+pragma solidity 0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract NFTNormal is ERC721Enumerable, Ownable {
+    //--------------------------------------------------------------------
+    // VARIABLES
     using Strings for uint256;
 
     string public baseURI;
@@ -14,7 +16,7 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     string public hiddenMetadataUri;
 
     uint256 public cost;
-    uint256 public maxSupply;
+    uint256 public immutable maxSupply;
     uint256 public maxMintAmountPerTx;
     // Number of nfts is limited to 3 per user during whitelisting
     uint256 public nftPerAddressLimit = 3;
@@ -26,6 +28,21 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     address[] public whitelistedAddresses;
     mapping(address => uint256) public addressMintedBalance;
 
+    //--------------------------------------------------------------------
+    // ERRORS
+
+    error NFT__ContractIsPaused();
+    error NFT__InvalidMintAmount();
+    error NFT__ExceededMaxMintAmountPerTx();
+    error NFT__MaxSupplyExceeded();
+    error NFT__ExceededMaxNftPerAddress();
+    error NFT__NotWhitelisted(address user);
+    error NFT__InsufficientFunds();
+    error NFT__QueryForNonExistentToken(uint256 tokenId);
+
+    //--------------------------------------------------------------------
+    // CONSTRUCTOR
+
     constructor(
         string memory _name,
         string memory _symbol,
@@ -34,33 +51,37 @@ contract NFTNormal is ERC721Enumerable, Ownable {
         uint256 _maxMintAmountPerTx,
         string memory _hiddenMetadataUri
     ) ERC721(_name, _symbol) {
-        setHiddenMetadataUri(_hiddenMetadataUri);
-        setCost(_cost);
-        setMaxMintAmountPerTx(_maxMintAmountPerTx);
+        hiddenMetadataUri = _hiddenMetadataUri;
+        cost = _cost;
+        maxMintAmountPerTx = _maxMintAmountPerTx;
         maxSupply = _maxSupply;
     }
 
-    // public
-    function mint(uint256 _mintAmount) public payable {
-        require(!paused, "the contract is paused");
-        require(_mintAmount != 0, "need to mint at least 1 NFT");
-        require(
-            _mintAmount <= maxMintAmountPerTx,
-            "max mint amount per session exceeded"
-        );
+    //--------------------------------------------------------------------
+    // FUNCTIONS
+
+    function mint(uint256 _mintAmount) external payable {
+        if (paused) revert NFT__ContractIsPaused();
+        if (_mintAmount == 0) revert NFT__InvalidMintAmount();
+        if (_mintAmount > maxMintAmountPerTx) {
+            revert NFT__ExceededMaxMintAmountPerTx();
+        }
         uint256 supply = totalSupply();
-        require(supply + _mintAmount <= maxSupply, "max NFT limit exceeded");
+        if (supply + _mintAmount > maxSupply) {
+            revert NFT__MaxSupplyExceeded();
+        }
 
         if (msg.sender != owner()) {
             if (whitelistMintEnabled == true) {
-                require(isWhitelisted(msg.sender), "user is not whitelisted");
+                if (!isWhitelisted(msg.sender)) {
+                    revert NFT__NotWhitelisted(msg.sender);
+                }
                 uint256 ownerMintedCount = addressMintedBalance[msg.sender];
-                require(
-                    ownerMintedCount + _mintAmount <= nftPerAddressLimit,
-                    "max NFT per address exceeded"
-                );
+                if (ownerMintedCount + _mintAmount > nftPerAddressLimit) {
+                    revert NFT__ExceededMaxNftPerAddress();
+                }
             }
-            require(msg.value >= cost * _mintAmount, "insufficient funds");
+            if (msg.value < cost * _mintAmount) revert NFT__InsufficientFunds();
         }
 
         for (uint256 i = 1; i <= _mintAmount; ) {
@@ -108,11 +129,7 @@ contract NFTNormal is ERC721Enumerable, Ownable {
         override
         returns (string memory)
     {
-        require(
-            _exists(tokenId),
-            "ERC721Metadata: URI query for nonexistent token"
-        );
-
+        if (!_exists(tokenId)) revert NFT__QueryForNonExistentToken(tokenId);
         if (revealed == false) {
             return hiddenMetadataUri;
         }
@@ -130,54 +147,24 @@ contract NFTNormal is ERC721Enumerable, Ownable {
                 : "";
     }
 
-    //only owner
+    //--------------------------------------------------------------------
+    // OWNER FUNCTIONS
 
-    function startWhitelisting() external payable onlyOwner {
-        require(paused && !whitelistMintEnabled, "whitelisting impossible");
-        pause(false);
-        setWhitelistMintEnabled(true);
-    }
-
-    function startPresale(uint256 _newCost, uint256 _newmaxMintAmount)
-        external
-        payable
-        onlyOwner
-    {
-        require(!paused && whitelistMintEnabled, "Presale impossible");
-        setWhitelistMintEnabled(false);
-        setCost(_newCost);
-        setMaxMintAmountPerTx(_newmaxMintAmount);
-    }
-
-    function startPublicSale(
-        string memory _newBaseURI,
-        uint256 _newCost,
-        uint256 _newmaxMintAmount
-    ) external payable onlyOwner {
-        require(
-            !paused && !whitelistMintEnabled && !revealed,
-            "Public sale impossible"
-        );
-        reveal(_newBaseURI);
-        setCost(_newCost);
-        setMaxMintAmountPerTx(_newmaxMintAmount);
-    }
-
-    function reveal(string memory _newBaseURI) public payable onlyOwner {
+    function reveal(string memory _newBaseURI) external payable onlyOwner {
         revealed = true;
         setBaseURI(_newBaseURI);
     }
 
-    function setNftPerAddressLimit(uint256 _limit) public payable onlyOwner {
+    function setNftPerAddressLimit(uint256 _limit) external payable onlyOwner {
         nftPerAddressLimit = _limit;
     }
 
-    function setCost(uint256 _newCost) public payable onlyOwner {
+    function setCost(uint256 _newCost) external payable onlyOwner {
         cost = _newCost;
     }
 
     function setMaxMintAmountPerTx(uint256 _newmaxMintAmount)
-        public
+        external
         payable
         onlyOwner
     {
@@ -189,7 +176,7 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     }
 
     function setBaseExtension(string memory _newBaseExtension)
-        public
+        external
         payable
         onlyOwner
     {
@@ -197,23 +184,23 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     }
 
     function setHiddenMetadataUri(string memory _hiddenMetadataUri)
-        public
+        external
         payable
         onlyOwner
     {
         hiddenMetadataUri = _hiddenMetadataUri;
     }
 
-    function pause(bool _state) public payable onlyOwner {
+    function pause(bool _state) external payable onlyOwner {
         paused = _state;
     }
 
-    function setWhitelistMintEnabled(bool _state) public payable onlyOwner {
+    function setWhitelistMintEnabled(bool _state) external payable onlyOwner {
         whitelistMintEnabled = _state;
     }
 
     function whitelistUsers(address[] calldata _users)
-        public
+        external
         payable
         onlyOwner
     {
@@ -221,7 +208,7 @@ contract NFTNormal is ERC721Enumerable, Ownable {
         whitelistedAddresses = _users;
     }
 
-    function withdraw() public payable onlyOwner {
+    function withdraw() external payable onlyOwner {
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
