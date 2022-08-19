@@ -8,7 +8,10 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract NFT is ERC721AQueryable, Ownable, ReentrancyGuard {
+contract NftLowGasContract is ERC721AQueryable, Ownable, ReentrancyGuard {
+    //--------------------------------------------------------------------
+    // VARIABLES
+
     using Strings for uint256;
 
     string public uriPrefix = "";
@@ -16,7 +19,7 @@ contract NFT is ERC721AQueryable, Ownable, ReentrancyGuard {
     string public hiddenMetadataUri;
 
     uint256 public cost;
-    uint256 public maxSupply;
+    uint256 public immutable maxSupply;
     uint256 public maxMintAmountPerTx;
 
     bool public paused = true;
@@ -24,7 +27,44 @@ contract NFT is ERC721AQueryable, Ownable, ReentrancyGuard {
     bool public revealed = false;
 
     bytes32 public merkleRoot;
-    mapping(address => bool) public whitelistClaimed;
+
+    //--------------------------------------------------------------------
+    // ERRORS
+
+    error NFT__ContractIsPaused();
+    error NFT__InvalidMintAmount();
+    error NFT__MaxSupplyExceeded();
+    error NFT__WhitelistNotEnabled();
+    error NFT__AlreadyClaimed(address user);
+    error NFT__InvalidProof(address user);
+    error NFT__InsufficientFunds();
+    error NFT__QueryForNonExistentToken(uint256 tokenId);
+
+    //--------------------------------------------------------------------
+    // MODIFIERS
+
+    modifier isPaused() {
+        if (paused) revert NFT__ContractIsPaused();
+        _;
+    }
+
+    modifier mintCompliance(uint256 _mintAmount) {
+        if (_mintAmount == 0 || _mintAmount > maxMintAmountPerTx) {
+            revert NFT__InvalidMintAmount();
+        }
+        if (totalSupply() + _mintAmount > maxSupply) {
+            revert NFT__MaxSupplyExceeded();
+        }
+        _;
+    }
+
+    modifier mintPriceCompliance(uint256 _mintAmount) {
+        if (msg.value < cost * _mintAmount) revert NFT__InsufficientFunds();
+        _;
+    }
+
+    //--------------------------------------------------------------------
+    // CONSTRUCTOR
 
     constructor(
         string memory _tokenName,
@@ -34,65 +74,41 @@ contract NFT is ERC721AQueryable, Ownable, ReentrancyGuard {
         uint256 _maxMintAmountPerTx,
         string memory _hiddenMetadataUri
     ) ERC721A(_tokenName, _tokenSymbol) {
-        setCost(_cost);
         maxSupply = _maxSupply;
-        setMaxMintAmountPerTx(_maxMintAmountPerTx);
-        setHiddenMetadataUri(_hiddenMetadataUri);
+        hiddenMetadataUri = _hiddenMetadataUri;
+        cost = _cost;
+        maxMintAmountPerTx = _maxMintAmountPerTx;
     }
 
-    modifier mintCompliance(uint256 _mintAmount) {
-        require(
-            _mintAmount > 0 && _mintAmount <= maxMintAmountPerTx,
-            "Invalid mint amount!"
-        );
-        require(
-            totalSupply() + _mintAmount <= maxSupply,
-            "Max supply exceeded!"
-        );
-        _;
-    }
-
-    modifier mintPriceCompliance(uint256 _mintAmount) {
-        require(msg.value >= cost * _mintAmount, "Insufficient funds!");
-        _;
-    }
+    //--------------------------------------------------------------------
+    // FUNCTIONS
 
     function whitelistMint(uint256 _mintAmount, bytes32[] calldata _merkleProof)
-        public
+        external
         payable
+        isPaused
         mintCompliance(_mintAmount)
         mintPriceCompliance(_mintAmount)
     {
         // Verify whitelist requirements
-        require(whitelistMintEnabled, "The whitelist sale is not enabled!");
-        require(!whitelistClaimed[_msgSender()], "Address already claimed!");
-        bytes32 leaf = keccak256(abi.encodePacked(_msgSender()));
-        require(
-            MerkleProof.verify(_merkleProof, merkleRoot, leaf),
-            "Invalid proof!"
-        );
-
-        whitelistClaimed[_msgSender()] = true;
-        _safeMint(_msgSender(), _mintAmount);
+        if (!whitelistMintEnabled) revert NFT__WhitelistNotEnabled();
+        address user = _msgSender();
+        if (balanceOf(user) != 0) revert NFT__AlreadyClaimed(user);
+        bytes32 leaf = keccak256(abi.encodePacked(user));
+        if (!MerkleProof.verify(_merkleProof, merkleRoot, leaf)) {
+            revert NFT__InvalidProof(user);
+        }
+        _safeMint(user, _mintAmount);
     }
 
     function mint(uint256 _mintAmount)
-        public
+        external
         payable
+        isPaused
         mintCompliance(_mintAmount)
         mintPriceCompliance(_mintAmount)
     {
-        require(!paused, "The contract is paused!");
-
         _safeMint(_msgSender(), _mintAmount);
-    }
-
-    function mintForAddress(uint256 _mintAmount, address _receiver)
-        public
-        mintCompliance(_mintAmount)
-        onlyOwner
-    {
-        _safeMint(_receiver, _mintAmount);
     }
 
     function _startTokenId() internal view virtual override returns (uint256) {
@@ -106,10 +122,7 @@ contract NFT is ERC721AQueryable, Ownable, ReentrancyGuard {
         override
         returns (string memory)
     {
-        require(
-            _exists(_tokenId),
-            "ERC721Metadata: URI query for nonexistent token"
-        );
+        if (!_exists(_tokenId)) revert NFT__QueryForNonExistentToken(_tokenId);
 
         if (revealed == false) {
             return hiddenMetadataUri;
@@ -128,49 +141,51 @@ contract NFT is ERC721AQueryable, Ownable, ReentrancyGuard {
                 : "";
     }
 
-    function setRevealed(bool _state) public onlyOwner {
+    function setRevealed(bool _state) external payable onlyOwner {
         revealed = _state;
     }
 
-    function setCost(uint256 _cost) public onlyOwner {
+    function setCost(uint256 _cost) external payable onlyOwner {
         cost = _cost;
     }
 
     function setMaxMintAmountPerTx(uint256 _maxMintAmountPerTx)
-        public
+        external
+        payable
         onlyOwner
     {
         maxMintAmountPerTx = _maxMintAmountPerTx;
     }
 
     function setHiddenMetadataUri(string memory _hiddenMetadataUri)
-        public
+        external
+        payable
         onlyOwner
     {
         hiddenMetadataUri = _hiddenMetadataUri;
     }
 
-    function setUriPrefix(string memory _uriPrefix) public onlyOwner {
+    function setUriPrefix(string memory _uriPrefix) external payable onlyOwner {
         uriPrefix = _uriPrefix;
     }
 
-    function setUriSuffix(string memory _uriSuffix) public onlyOwner {
+    function setUriSuffix(string memory _uriSuffix) external payable onlyOwner {
         uriSuffix = _uriSuffix;
     }
 
-    function setPaused(bool _state) public onlyOwner {
+    function setPaused(bool _state) external payable onlyOwner {
         paused = _state;
     }
 
-    function setMerkleRoot(bytes32 _merkleRoot) public onlyOwner {
+    function setMerkleRoot(bytes32 _merkleRoot) external payable onlyOwner {
         merkleRoot = _merkleRoot;
     }
 
-    function setWhitelistMintEnabled(bool _state) public onlyOwner {
+    function setWhitelistMintEnabled(bool _state) external payable onlyOwner {
         whitelistMintEnabled = _state;
     }
 
-    function withdraw() public onlyOwner nonReentrant {
+    function withdraw() external payable onlyOwner nonReentrant {
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
