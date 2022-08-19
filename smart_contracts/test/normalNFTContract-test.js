@@ -10,6 +10,7 @@ describe("NftContract.sol", () => {
 
     beforeEach(async () => {
         [owner, user1, user2, randomUser] = await ethers.getSigners()
+
         // Deploy Nft contract 
         const contractFactory = await ethers.getContractFactory("NFTNormal");
         contract = await contractFactory.deploy(
@@ -39,8 +40,7 @@ describe("NftContract.sol", () => {
             expect(await contract.paused()).to.equal(true);
             expect(await contract.revealed()).to.equal(false);
             expect(await contract.whitelistMintEnabled()).to.equal(false);
-
-            await expect(contract.tokenURI(1)).to.be.revertedWith('ERC721Metadata: URI query for nonexistent token');
+            await expect(contract.tokenURI(1)).to.be.revertedWithCustomError(contract, 'NFT__QueryForNonExistentToken');
         });
     });
 
@@ -54,9 +54,13 @@ describe("NftContract.sol", () => {
 
             const mintCost = await contract.cost()
             // Whitelist mint
-            await expect(contract.connect(user1).mint(1, { value: mintCost })).to.be.revertedWith('the contract is paused');
+            await expect(
+                contract.connect(user1).mint(1, { value: mintCost })
+            ).to.be.revertedWithCustomError(contract, 'NFT__ContractIsPaused');
             // public mint
-            await expect(contract.connect(randomUser).mint(1, { value: mintCost })).to.be.revertedWith('the contract is paused');
+            await expect(
+                contract.connect(randomUser).mint(1, { value: mintCost })
+            ).to.be.revertedWithCustomError(contract, 'NFT__ContractIsPaused');
         });
     })
 
@@ -64,7 +68,8 @@ describe("NftContract.sol", () => {
 
         beforeEach(async () => {
             // enable whitelist sales
-            await contract.connect(owner).startWhitelisting()
+            await contract.connect(owner).pause(false)
+            await contract.connect(owner).setWhitelistMintEnabled(true)
         })
 
         it("should allow owner to whitelist addresses", async () => {
@@ -93,13 +98,22 @@ describe("NftContract.sol", () => {
             expect(await contract.addressMintedBalance(user1.address)).to.equal(1);
             expect(await contract.tokenURI(1)).to.equal(CollectionConfig.hiddenMetadataUri)
 
-            await expect(contract.connect(user2).mint(3, { value: mintCost })).to.be.revertedWith("max mint amount per session exceeded")
-            await expect(contract.connect(randomUser).mint(1, { value: mintCost })).to.be.revertedWith("user is not whitelisted")
-            await expect(contract.connect(user2).mint(0, { value: mintCost })).to.be.revertedWith("need to mint at least 1 NFT")
+            await expect(
+                contract.connect(user2).mint(3, { value: mintCost })
+            ).to.be.revertedWithCustomError(contract, 'NFT__ExceededMaxMintAmountPerTx');
+            await expect(
+                contract.connect(randomUser).mint(1, { value: mintCost })
+            ).to.be.revertedWithCustomError(contract, 'NFT__NotWhitelisted');
+            await expect(
+                contract.connect(user2).mint(0, { value: mintCost })
+            ).to.be.revertedWithCustomError(contract, 'NFT__InvalidMintAmount');
+
             // minting is limited to 3 nft per user during whitelisting period
             await contract.connect(user1).mint(1, { value: mintCost })
             await contract.connect(user1).mint(1, { value: mintCost })
-            await expect(contract.connect(user1).mint(1, { value: mintCost })).to.be.revertedWith("max NFT per address exceeded")
+            await expect(
+                contract.connect(user1).mint(1, { value: mintCost })
+            ).to.be.revertedWithCustomError(contract, 'NFT__ExceededMaxNftPerAddress');
         });
 
         it("should allow owner to mint", async () => {
@@ -116,10 +130,14 @@ describe("NftContract.sol", () => {
 
         beforeEach(async () => {
             // pass the whitelisting step
-            await contract.connect(owner).startWhitelisting()
+            await contract.connect(owner).pause(false)
+            await contract.connect(owner).setWhitelistMintEnabled(true)
             // disable whitelist sales and open presale
-            await contract.connect(owner).startPresale(
-                getAmountInWei(CollectionConfig.preSale.price),
+            await contract.connect(owner).setWhitelistMintEnabled(false)
+            await contract.connect(owner).setCost(
+                getAmountInWei(CollectionConfig.preSale.price)
+            )
+            await contract.connect(owner).setMaxMintAmountPerTx(
                 CollectionConfig.preSale.maxMintAmountPerTx
             )
         })
@@ -156,16 +174,16 @@ describe("NftContract.sol", () => {
         beforeEach(async () => {
 
             // pass the two steps of : whitelisting and presale
-            await contract.connect(owner).startWhitelisting()
-            await contract.connect(owner).startPresale(
-                getAmountInWei(CollectionConfig.preSale.price),
-                CollectionConfig.preSale.maxMintAmountPerTx
+            await contract.connect(owner).pause(false)
+            await contract.connect(owner).setWhitelistMintEnabled(false)
+
+            // Stat Publi sales / Reveal nfts to public
+            await contract.connect(owner).reveal(CollectionConfig.baseMetadataURI)
+            await contract.connect(owner).setCost(
+                getAmountInWei(CollectionConfig.publicSale.price)
             )
-            // Reveal nfts to public
-            await contract.connect(owner).startPublicSale(
-                CollectionConfig.baseMetadataURI,
-                getAmountInWei(CollectionConfig.publicSale.price),
-                CollectionConfig.publicSale.maxMintAmountPerTx,
+            await contract.connect(owner).setMaxMintAmountPerTx(
+                CollectionConfig.publicSale.maxMintAmountPerTx
             )
         })
 
