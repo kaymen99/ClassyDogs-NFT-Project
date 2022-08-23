@@ -10,9 +10,9 @@ import networksMap from "../utils/networksMap.json";
 import CountDown from "./CountDown";
 
 const countdownPeriods = {
-    drop: new Date("July 02,2022 ").getTime(),
-    whitelisting: new Date("July 10,2022 ").getTime(),
-    presale: new Date("July 15,2022 ").getTime(),
+    drop: new Date("August 24,2022 ").getTime(),
+    whitelisting: new Date("August 28,2022 ").getTime(),
+    presale: new Date("Septembre 09,2022 ").getTime(),
 }
 
 function Mint() {
@@ -129,9 +129,10 @@ function Mint() {
                     data.account !== "" ? (
                         <>
                             <p>
-                                {mintingState.currentSupply} NFTs already minted out of our {mintingState.maxSupply} Classy Dogs collection
+                                {mintingState.currentSupply}
+                                <span style={{ color: "#f82167", fontWeight: 600 }}> / </span>
+                                {mintingState.maxSupply}
                             </p>
-                            <p>You are the owner of {mintingState.userNftsCount} ClassyDogs </p>
                             <div className="d-flex justify-content-center">
                                 <button type="button"
                                     className="minus btn btn-danger rounded-circle"
@@ -143,25 +144,33 @@ function Mint() {
                                     disabled={amount === mintingState.maxMintAmountPerTx}
                                     onClick={handleIncrement}>+</button>
                             </div>
+
                             <Button className='bt-linear'
+                                style={{ margin: "10px" }}
                                 variant="contained"
                                 color="primary"
                                 onClick={mintNewNft}>
                                 {loading ? <CircularProgress color="inherit" /> : "Mint"}
                             </Button>
+                            <br />
+
+                            <p>You are the owner of {mintingState.userNftsCount} ClassyDogs </p>
                         </>
                     ) : (
                         <>
-                            <p>{mintingState.currentSupply} NFTs already minted out of our {mintingState.maxSupply} Classy Dogs collection</p>
+                            <p>
+                                {mintingState.currentSupply}
+                                <span style={{ color: "#f82167", fontWeight: 600 }}> / </span>
+                                {mintingState.maxSupply}
+                            </p>
+                            <br />
                             <p>You must be connected to mint</p>
                         </>
-
                     )
                 )}
-
             </div>
         </div >
     )
 }
 
-export default Mint
+export default Mint;
