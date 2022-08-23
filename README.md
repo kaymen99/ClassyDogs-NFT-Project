@@ -82,7 +82,7 @@ The front-end is built using the following libraries:
       
 The main component is Mint.js which handles the nft minting and the coundown periods : 
 
-![Capture d’écran 2022-07-04 à 18 54 45](https://user-images.githubusercontent.com/83681204/177201050-e93c2aad-4832-49b1-88bd-0f78297c394d.png)
+![Capture d’écran 2022-08-23 à 23 04 48](https://user-images.githubusercontent.com/83681204/186274665-e2d7c1a4-c2b0-412d-93d2-6eb4be03eaba.png)
 
 The roadmap explains the steps followed in the NFT project progression :
 
