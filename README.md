@@ -110,6 +110,7 @@ Please install or have installed the following:
 After installing node open a terminal in your code editor (VS Code for example) and clone this repository :
    ```sh
    git clone https://github.com/kaymen99/Complete-NFT-Project.git
+   cd Complete-NFT-Project
    ```
 
 Then install the art engine dependancies by running :
