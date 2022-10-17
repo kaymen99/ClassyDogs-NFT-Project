@@ -88,7 +88,7 @@ The roadmap explains the steps followed in the NFT project progression :
 
 ![Capture d’écran 2022-07-04 à 18 58 28](https://user-images.githubusercontent.com/83681204/177201365-c446e19d-f5c8-4ee8-bf58-afbc9051f646.png)
 
-The dashboard can be only be accessed by the nft contract owner from the account window when clicking on the account button in the top of the page, it gives the owner the possibility of withdraw the contract balance, changing nft minting parametres or changing contract state (whitelisting, presale, public sale):
+The dashboard can only be accessed by the nft contract owner from the account window when clicking on the account button in the top of the page, it gives the owner the possibility of withdraw the contract balance, changing nft minting parametres or changing contract state (whitelisting, presale, public sale):
 
 ![Capture d’écran 2022-08-03 à 21 07 41](https://user-images.githubusercontent.com/83681204/182701220-af3fd413-18dc-4f51-b253-674e0d85a863.png)
 
@@ -109,8 +109,8 @@ Please install or have installed the following:
 
 After installing node open a terminal in your code editor (VS Code for example) and clone this repository :
    ```sh
-   git clone https://github.com/kaymen99/Complete-NFT-Project.git
-   cd Complete-NFT-Project
+   git clone https://github.com/kaymen99/ClassyDogs-NFT-Project.git
+   cd ClassyDogs-NFT-Project
    ```
 
 Then install the art engine dependancies by running :
@@ -119,9 +119,10 @@ Then install the art engine dependancies by running :
    yarn
    ```
    
-This will install all libraries needed for creating the nfts, the next step is to add the differents layers, the art used for this collection is not of my creation, the orginal images can be downloaded [here](https://www.firevectors.com/2022/03/free-nft-layers-download.html?m=1) or you can use the ones i already edited and added rarities to them (the folder size was too big so i couldn't upload to Github), you can get them from Google drive with this [link](https://drive.google.com/drive/folders/1za0Wg11BrowiIOaWEGb2UE4fJexoJi5e?usp=sharing).
+This will install all the libraries needed for creating the nfts, the next step is to add the differents layers, the art used for this collection is not of my creation, the orginal images can be downloaded [here](https://www.firevectors.com/2022/03/free-nft-layers-download.html?m=1) or you can use the ones i already edited and added rarities to them (the folder size was too big so i couldn't upload to Github), you can get them from Google drive with this [link](https://drive.google.com/drive/folders/1za0Wg11BrowiIOaWEGb2UE4fJexoJi5e?usp=sharing).
 
-In the config file you can change the collection name and description (if you want), you can choose how many items you want to generate by changing the growEditionSizeTo variable and also the images size (format).
+In the config file you can change the collection name and description (if you want), you can choose how many items you want to generate by changing the `growEditionSizeTo` variable and also the images size (format).
+
 After finishing the configuration run the command to generate the items :
    ```sh
    yarn build
@@ -138,7 +139,7 @@ Update the URIs for all the NFTs metadata files by running this command :
    ```
 Now upload the final json folder to IPFS as you did with images folder.
 
-Finally in the build folder you'll also find a hidden folder which contains the hidden NFT image&metadata used in the collection pre-reveal step,the hidden image must be uploaded to IPFS and its CID should be copied to the hidden metadata file which in the end must also be uploaded to IPFS to get the final hidden NFT URI. 
+Finally in the build folder you'll also find a hidden folder which contains the hidden NFT image & metadata used in the collection pre-reveal step,the hidden image must be uploaded to IPFS and its CID should be copied to the hidden metadata file which in the end must also be uploaded to IPFS to get the final hidden NFT URI. 
 
 If you find problems going through the upload part you can refere back to hashlips Youtube video which explain each step perfectly [How to create an NFT collection - Masterclass](https://www.youtube.com/watch?v=Zhmj4PiJ-GA)
 
