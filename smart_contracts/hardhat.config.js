@@ -1,7 +1,7 @@
 require("dotenv").config();
-require("@nomiclabs/hardhat-waffle");
-require("@nomicfoundation/hardhat-chai-matchers");
+require("hardhat-contract-sizer");
 require("@nomiclabs/hardhat-etherscan");
+require("@nomicfoundation/hardhat-chai-matchers");
 require("hardhat-gas-reporter");
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -21,33 +21,33 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 
-const RINKEBY_ETHERSCAN_API_KEY = process.env.RINKEBY_ETHERSCAN_API_KEY
-const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL
-const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
+const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL;
+const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
 
 module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.7",
-      }
+        version: "0.8.10",
+        // settings: {
+        //   optimizer: {
+        //     enabled: true,
+        //     runs: 200,
+        //   },
+        // },
+      },
     ],
   },
   networks: {
     hardhat: {
-      chainId: 31337
+      chainId: 31337,
     },
     ganache: {
       chainId: 1337,
       url: "http://127.0.0.1:7545",
-      accounts: [process.env.PRIVATE_KEY]
-    },
-    rinkeby: {
-      url: RINKEBY_RPC_URL,
       accounts: [process.env.PRIVATE_KEY],
-      chainId: 4,
-    }
+    },
     // mumbai: {
     //   url: MUMBAI_RPC_URL,
     //   accounts: [process.env.PRIVATE_KEY],
@@ -60,11 +60,12 @@ module.exports = {
     // }
   },
   paths: {
-    artifacts: "./artifacts"
+    artifacts: "./artifacts",
+  },
+  gasReporter: {
+    enabled: true,
   },
   etherscan: {
-    apiKey: {
-      rinkeby: RINKEBY_ETHERSCAN_API_KEY,
-    }
-  }
+    apiKey: POLYGONSCAN_API_KEY,
+  },
 };
