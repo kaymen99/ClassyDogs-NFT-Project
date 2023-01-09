@@ -37,7 +37,7 @@ async function main() {
     `)
     }
 
-    if (!developmentChains.includes(deployNetwork) && hre.config.etherscan.apiKey[deployNetwork]) {
+    if (!developmentChains.includes(deployNetwork) && hre.config.etherscan.apiKey != null) {
         console.log("waiting for 6 blocks verification ...")
         await nft_contract.deployTransaction.wait(6)
 
