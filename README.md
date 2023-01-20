@@ -188,14 +188,14 @@ After going through all the configuration step, you'll need to deploy the smart 
    ```
 This will create a config.js file and an artifacts folder and transfer them to the src folder to enable the interaction between the contract and the UI
 
-* <b>IMPORTANT :</b> I used the ganache network for development purposes only, you can choose another testnet or real network if you want, for that you need to add it to the hardhat.config file for example for the rinkeby testnet  
+* <b>IMPORTANT :</b> I used the ganache network for development purposes only, you can choose another testnet or real network if you want, for that you need to add it to the hardhat.config file for example for the polygon mumbai testnet : 
 
    ```sh
-       mumbai: {
-         url: MUMBAI_RPC_URL,
-         accounts: [process.env.PRIVATE_KEY],
-         chainId: 80001,
-       },
+   mumbai: {
+     url: MUMBAI_RPC_URL,
+     accounts: [process.env.PRIVATE_KEY],
+     chainId: 80001,
+   }
    ```
 
 If you want to test the functionnalities of the NFT contract you can do it by running:
