@@ -154,8 +154,7 @@ As mentioned before the contracts are developed with the Hardhat framework, befo
 Next you need to setup the environement variables in the .env file, this are used when deploying the contracts :
 
    ```sh
-    RINKEBY_ETHERSCAN_API_KEY="your etherscan api key"
-    RINKEBY_RPC_URL="Your rinkeby RPC url from alchemy or infura"
+    POLYGONSCAN_API_KEY = 'your polygonscan api key'
     POLYGON_RPC_URL="Your polygon RPC url from alchemy or infura"
     MUMBAI_RPC_URL="Your mumbai RPC url from alchemy or infura"
     PRIVATE_KEY="your private key"
@@ -192,11 +191,11 @@ This will create a config.js file and an artifacts folder and transfer them to t
 * <b>IMPORTANT :</b> I used the ganache network for development purposes only, you can choose another testnet or real network if you want, for that you need to add it to the hardhat.config file for example for the rinkeby testnet  
 
    ```sh
-   rinkeby: {
-      url: RINKEBY_RPC_URL,
-      accounts: [process.env.PRIVATE_KEY],
-      chainId: 4,
-    }
+       mumbai: {
+         url: MUMBAI_RPC_URL,
+         accounts: [process.env.PRIVATE_KEY],
+         chainId: 80001,
+       },
    ```
 
 If you want to test the functionnalities of the NFT contract you can do it by running:
