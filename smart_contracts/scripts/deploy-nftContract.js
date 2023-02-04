@@ -29,12 +29,13 @@ async function main() {
     /* this code writes the contract addresses to a local */
     /* file named config.js that we can use in the app */
     if (fs.existsSync("../front-end/src")) {
+        fs.rmSync("../src/artifacts", { recursive: true, force: true });
         fse.copySync("./artifacts/contracts", "../front-end/src/artifacts")
         fs.writeFileSync('../front-end/src/utils/contracts-config.js', `
-    export const contractAddress = "${nft_contract.address}"
-    export const ownerAddress = "${nft_contract.signer.address}"
-    export const networkDeployedTo = "${hre.network.config.chainId}"
-    `)
+            export const contractAddress = "${nft_contract.address}"
+            export const ownerAddress = "${nft_contract.signer.address}"
+            export const networkDeployedTo = "${hre.network.config.chainId}"
+        `)
     }
 
     if (!developmentChains.includes(deployNetwork) && hre.config.etherscan.apiKey != null) {
