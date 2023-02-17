@@ -15,15 +15,15 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     string public baseExtension = ".json";
     string public hiddenMetadataUri;
 
-    uint256 public cost;
     uint256 public immutable maxSupply;
+    uint256 public cost;
     uint256 public maxMintAmountPerTx;
     // Number of nfts is limited to 3 per user during whitelisting
     uint256 public nftPerAddressLimit = 3;
 
     bool public paused = true;
-    bool public revealed = false;
-    bool public whitelistMintEnabled = false;
+    bool public revealed;
+    bool public whitelistMintEnabled;
 
     address[] public whitelistedAddresses;
     mapping(address => uint256) public addressMintedBalance;
@@ -72,20 +72,19 @@ contract NFTNormal is ERC721Enumerable, Ownable {
         }
 
         if (msg.sender != owner()) {
-            if (whitelistMintEnabled == true) {
-                if (!isWhitelisted(msg.sender)) {
-                    revert NFT__NotWhitelisted(msg.sender);
-                }
-                uint256 ownerMintedCount = addressMintedBalance[msg.sender];
-                if (ownerMintedCount + _mintAmount > nftPerAddressLimit) {
-                    revert NFT__ExceededMaxNftPerAddress();
-                }
-            }
+            if (whitelistMintEnabled && !isWhitelisted(msg.sender))
+                revert NFT__NotWhitelisted(msg.sender);
             if (msg.value < cost * _mintAmount) revert NFT__InsufficientFunds();
+
+            uint256 mintedCount = addressMintedBalance[msg.sender];
+            if (mintedCount + _mintAmount > nftPerAddressLimit)
+                revert NFT__ExceededMaxNftPerAddress();
+            unchecked {
+                addressMintedBalance[msg.sender] = mintedCount + _mintAmount;
+            }
         }
 
         for (uint256 i = 1; i <= _mintAmount; ) {
-            addressMintedBalance[msg.sender]++;
             _safeMint(msg.sender, supply + i);
             unchecked {
                 ++i;
@@ -107,7 +106,7 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     }
 
     function walletOfOwner(address _owner)
-        public
+        external
         view
         returns (uint256[] memory)
     {
@@ -130,9 +129,7 @@ contract NFTNormal is ERC721Enumerable, Ownable {
         returns (string memory)
     {
         if (!_exists(tokenId)) revert NFT__QueryForNonExistentToken(tokenId);
-        if (revealed == false) {
-            return hiddenMetadataUri;
-        }
+        if (!revealed) return hiddenMetadataUri;
 
         string memory currentBaseURI = _baseURI();
         return
@@ -209,8 +206,10 @@ contract NFTNormal is ERC721Enumerable, Ownable {
     }
 
     function withdraw() external payable onlyOwner {
-        (bool os, ) = payable(owner()).call{value: address(this).balance}("");
-        require(os);
+        (bool success, ) = payable(owner()).call{value: address(this).balance}(
+            ""
+        );
+        require(success);
     }
 
     // internal
