@@ -35,6 +35,7 @@ contract NftLowGasContract is ERC721AQueryable, Ownable, ReentrancyGuard {
     error NFT__InvalidMintAmount();
     error NFT__MaxSupplyExceeded();
     error NFT__WhitelistNotEnabled();
+    error NFT__OnlyWhitelistMint();
     error NFT__AlreadyClaimed(address user);
     error NFT__InvalidProof(address user);
     error NFT__InsufficientFunds();
@@ -108,11 +109,8 @@ contract NftLowGasContract is ERC721AQueryable, Ownable, ReentrancyGuard {
         mintCompliance(_mintAmount)
         mintPriceCompliance(_mintAmount)
     {
+        if (whitelistMintEnabled) revert NFT__OnlyWhitelistMint();
         _safeMint(_msgSender(), _mintAmount);
-    }
-
-    function _startTokenId() internal view virtual override returns (uint256) {
-        return 1;
     }
 
     function tokenURI(uint256 _tokenId)
@@ -140,6 +138,9 @@ contract NftLowGasContract is ERC721AQueryable, Ownable, ReentrancyGuard {
                 )
                 : "";
     }
+    
+    //--------------------------------------------------------------------
+    // OWNER FUNCTIONS
 
     function setRevealed(bool _state) external payable onlyOwner {
         revealed = _state;
@@ -189,8 +190,15 @@ contract NftLowGasContract is ERC721AQueryable, Ownable, ReentrancyGuard {
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
+    
+    //--------------------------------------------------------------------
+    // Internal FUNCTIONS
 
     function _baseURI() internal view virtual override returns (string memory) {
         return uriPrefix;
+    }
+    
+    function _startTokenId() internal view virtual override returns (uint256) {
+        return 1;
     }
 }
