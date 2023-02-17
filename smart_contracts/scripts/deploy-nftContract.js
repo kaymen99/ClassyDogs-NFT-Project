@@ -14,7 +14,6 @@ async function main() {
     const nft_contract = await NFTContract.deploy(
         CollectionConfig.tokenName,
         CollectionConfig.tokenSymbol,
-        CollectionConfig.baseMetadataURI,
         getAmountInWei(CollectionConfig.whitelistSale.price),
         CollectionConfig.maxSupply,
         CollectionConfig.whitelistSale.maxMintAmountPerTx,
