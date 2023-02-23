@@ -36,13 +36,13 @@ function Footer() {
                     <p> © {(new Date().getFullYear())} ClassyDogs, Inc. All Rights Reserved</p>
                 </div>
                 <div>
-                    <a href='https://github.com/Aymen1001'>
+                    <a href='https://github.com/kaymen99'>
                         <AiOutlineGithub size={25} color='white' className='footer-icon' />
                     </a>
-                    <a href='https://github.com/Aymen1001'>
+                    <a href='https://github.com/kaymen99'>
                         <AiOutlineTwitter size={25} color='white' className='footer-icon' />
                     </a>
-                    <a href='https://github.com/Aymen1001'>
+                    <a href='https://github.com/kaymen99'>
                         <RiDiscordFill size={25} color='white' className='footer-icon' />
                     </a>
 
