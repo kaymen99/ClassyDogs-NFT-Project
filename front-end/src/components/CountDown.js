@@ -1,75 +1,84 @@
 import React, { useEffect, useState } from "react";
+import Countdown from "react-countdown";
+import { CollectionConfig } from "../utils/CollectionConfig";
 
-function CountDown(props) {
-    const [timerDays, setTimerDays] = useState(0);
-    const [timerHours, setTimerHours] = useState(0);
-    const [timerMinutes, setTimerMinutes] = useState(0);
-    const [timerSeconds, setTimerSeconds] = useState(0);
+function CountDown() {
+  const [nextDate, setNextDate] = useState(0);
 
-    let interval;
-
-    const startTimer = () => {
-        const countDownDate = props.date;
-
-        interval = setInterval(() => {
-            const now = new Date().getTime();
-
-            const distance = countDownDate - now;
-
-            const days = Math.floor(distance / (24 * 60 * 60 * 1000));
-            const hours = Math.floor(
-                (distance % (24 * 60 * 60 * 1000)) / (1000 * 60 * 60)
-            );
-            const minutes = Math.floor((distance % (60 * 60 * 1000)) / (1000 * 60));
-            const seconds = Math.floor((distance % (60 * 1000)) / 1000);
-
-            if (distance < 0) {
-                clearInterval(interval.current);
-            } else {
-                // Update Timer
-                setTimerDays(days);
-                setTimerHours(hours);
-                setTimerMinutes(minutes);
-                setTimerSeconds(seconds);
-            }
-        });
-    };
-
-    useEffect(() => {
-        startTimer();
+  const format = (num) => {
+    return num.toLocaleString("en-US", {
+      minimumIntegerDigits: 2,
+      useGrouping: false,
     });
+  };
 
-    return (
-        <section class="container">
-            <div class="countdown">
-                <ul
-                    id="countdown"
-                    class="count-down"
-                    data-date="Feb 17, 2022 4:00:00 PM UTC"
-                >
-                    <li class="clock-item">
-                        <span class="count-number days">{timerDays}</span>
-                        <p class="count-text">Days</p>
-                    </li>
+  const renderer = ({ days, hours, minutes, seconds, completed }) => {
+    if (completed) {
+      return <></>;
+    } else {
+      return (
+        <ul id="countdown" className="count-down">
+          <li className="clock-item">
+            <span className="count-number days">{format(days)}</span>
+            <p className="count-text">Days</p>
+          </li>
 
-                    <li class="clock-item">
-                        <span class="count-number hours">{timerHours}</span>
-                        <p class="count-text">Hour</p>
-                    </li>
+          <li className="clock-item">
+            <span className="count-number hours">{format(hours)}</span>
+            <p className="count-text">Hour</p>
+          </li>
 
-                    <li class="clock-item">
-                        <span class="count-number minutes">{timerMinutes}</span>
-                        <p class="count-text">Min</p>
-                    </li>
+          <li className="clock-item">
+            <span className="count-number minutes">{format(minutes)}</span>
+            <p className="count-text">Min</p>
+          </li>
 
-                    <li class="clock-item">
-                        <span class="count-number seconds">{timerSeconds}</span>
-                        <p class="count-text">Sec</p>
-                    </li>
-                </ul>
-            </div>
-        </section>
-    );
+          <li className="clock-item">
+            <span className="count-number seconds">{format(seconds)}</span>
+            <p className="count-text">Sec</p>
+          </li>
+        </ul>
+      );
+    }
+  };
+
+  const getNextDate = () => {
+    const now = Date.now();
+    const dates = CollectionConfig.releaseDates;
+    const whitelistStart = dates.whitelistStart.getTime();
+    const whitelistEnd = dates.whitelistEnd.getTime();
+    const presaleStart = dates.presaleStart.getTime();
+    const presaleEnd = dates.presaleEnd.getTime();
+    const publicSaleOpen = dates.publicSaleOpen.getTime();
+    let _nextDate;
+    if (now < whitelistStart) {
+      _nextDate = whitelistStart;
+    } else if (now > whitelistStart && now < whitelistEnd) {
+      _nextDate = whitelistEnd;
+    } else if (now < presaleStart) {
+      _nextDate = presaleStart;
+    } else if (now > presaleStart && now < presaleEnd) {
+      _nextDate = presaleEnd;
+    } else if (now < publicSaleOpen) {
+      _nextDate = publicSaleOpen;
+    }
+    setNextDate(_nextDate);
+  };
+
+  useEffect(() => {
+    getNextDate();
+  }, []);
+
+  return (
+    <section className="container">
+      <div className="countdown">
+        <Countdown
+          date={CollectionConfig.releaseDates.whitelistStart.getTime()}
+          renderer={renderer}
+        />
+      </div>
+    </section>
+  );
 }
 
 export default CountDown;
